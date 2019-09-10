@@ -13,7 +13,11 @@ const userSchema = new Schema({
       passwordHash: {
         type: String,
         required: true
+      },
+      name: {
+        type: String
       }
+    
 });
 
 const User = mongoose.model("User", userSchema);

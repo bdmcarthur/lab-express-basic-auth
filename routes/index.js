@@ -87,6 +87,22 @@ router.get('/authentication/profile', routeGuardMiddleware, (req, res, next) => 
     });
 });
 
+router.get('/authentication/profile-edit', routeGuardMiddleware, (req, res, next) => {
+  res.render('profile-edit');
+});
+
+router.post('/authentication/profile-edit', routeGuardMiddleware, (req, res, next) => {
+  const username = req.body.username;
+  const name = req.body.name;
+
+  User.update({username: username}, { $set: {name: name}})
+  .then((book) => {
+    res.redirect('/authentication/profile');
+  })
+  .catch((error) => {
+    console.log(error);
+  })
+});
 
 router.get('/authentication/main', routeGuardMiddleware, (req, res, next) => {
   res.render('main');
