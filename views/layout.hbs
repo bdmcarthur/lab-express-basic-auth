@@ -8,20 +8,26 @@
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/">Home</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item active">
-            <a class="nav-link" href="/authentication/sign-up">Sign Up</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/authentication/log-in">Log In</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Something</a>
-          </li>
+            {{#if user}}
+            <li class="nav-item">
+              <a class="nav-link" href="/authentication/private">Private</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/authentication/main">Main</a>
+            </li>
+            <form method="POST" action="/authentication/sign-out">
+              <button class="btn">Sign Out</button>
+            </form>
+          {{else}}
+            <li class="nav-item">
+              <a class="nav-link" href="/authentication/sign-up">Sign Up</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/authentication/Log-in">Log In</a>
+            </li>
+          {{/if}}
         </ul>
       </div>
     </nav>

@@ -41,6 +41,13 @@ app.use(sassMiddleware({
   sourceMap: true
 }));
 
+app.use((req, res, next) => {
+  // Access user information from within my templates
+  res.locals.user = req.session.user;
+  // Keep going to the next middleware or route handler
+  next();
+});
+
 app.use('/', indexRouter);
 
 // Catch missing routes and forward to error handler

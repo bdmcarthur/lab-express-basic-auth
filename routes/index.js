@@ -2,8 +2,16 @@
 
 const { Router } = require('express');
 const router = Router();
-const bcrypt     = require("bcrypt");
-const User           = require("../models/user");
+const bcrypt = require("bcrypt");
+const User = require("../models/user");
+
+const routeGuardMiddleware = (req, res, next) => {
+  if (!req.session.user) {
+    res.redirect('/authentication/sign-up');
+  } else {
+    next();
+  }
+};
 
 router.get('/', (req, res, next) => {
   res.render('index', { title: 'Hello World!' });
@@ -11,6 +19,25 @@ router.get('/', (req, res, next) => {
 
 router.get('/authentication/sign-up', (req, res, next) => {
   res.render('sign-up');
+});
+
+const bcryptSalt     = 10;
+router.post('/authentication/sign-up', (req, res, next) => {
+  const username = req.body.username;
+  const password = req.body.password;
+  const salt     = bcrypt.genSaltSync(bcryptSalt);
+  const hashPass = bcrypt.hashSync(password, salt);
+ 
+  User.create({
+    username,
+    passwordHash: hashPass
+  })
+  .then(() => {
+    res.redirect("/");
+  })
+  .catch(error => {
+    console.log(error);
+  })
 });
 
 router.get('/authentication/log-in', (req, res, next) => {
@@ -48,29 +75,17 @@ router.post('/authentication/log-in', (req, res, next) => {
     });
 });
 
+router.get('/authentication/main', routeGuardMiddleware, (req, res, next) => {
+  res.render('main');
+});
 
+router.get('/authentication/private', routeGuardMiddleware, (req, res, next) => {
+  res.render('private');
+});
 
-
-
-
-const bcryptSalt     = 10;
-router.post('/authentication/sign-up', (req, res, next) => {
-  const username = req.body.username;
-  const password = req.body.password;
-  const salt     = bcrypt.genSaltSync(bcryptSalt);
-  const hashPass = bcrypt.hashSync(password, salt);
- 
-
-  User.create({
-    username,
-    passwordHash: hashPass
-  })
-  .then(() => {
-    res.redirect("/");
-  })
-  .catch(error => {
-    console.log(error);
-  })
+router.post('/authentication/sign-out', (req, res, next) => {
+  req.session.destroy();
+  res.redirect('/');
 });
 
 module.exports = router;
