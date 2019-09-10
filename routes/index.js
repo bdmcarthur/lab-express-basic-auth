@@ -21,7 +21,8 @@ router.get('/authentication/sign-up', (req, res, next) => {
   res.render('sign-up');
 });
 
-const bcryptSalt     = 10;
+
+const bcryptSalt = 10;
 router.post('/authentication/sign-up', (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -74,6 +75,18 @@ router.post('/authentication/log-in', (req, res, next) => {
       next(error);
     });
 });
+
+router.get('/authentication/profile', routeGuardMiddleware, (req, res, next) => {
+  const id = req.session.user._id
+  User.findById(id)
+    .then(user => {
+      res.render("profile", {user: user});
+    })
+    .catch(err => {
+      console.log("err");
+    });
+});
+
 
 router.get('/authentication/main', routeGuardMiddleware, (req, res, next) => {
   res.render('main');
